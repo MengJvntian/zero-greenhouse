@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>零点温室</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app">
+    <section class="case-header">
+      <div>
+        <p class="label">推理解密游戏</p>
+        <h1>零点温室</h1>
+        <p class="brief">暴雨切断山庄电力，植物学家沈砚倒在封闭温室。四名访客各有证词，但只有一条逻辑链能解释所有异常。</p>
+      </div>
+      <div class="case-clock" aria-label="案件时间">
+        <span id="caseTime">00:17</span>
+        <small>停电后第 17 分钟</small>
+      </div>
+    </section>
+
+    <section class="workspace">
+      <aside class="panel dossier">
+        <div class="tabs" role="tablist" aria-label="案卷切换">
+          <button class="tab active" data-tab="evidence" type="button">物证</button>
+          <button class="tab" data-tab="testimony" type="button">证词</button>
+          <button class="tab" data-tab="deduction" type="button">推演</button>
+          <button class="tab" data-tab="timeline" type="button">时间轴</button>
+        </div>
+
+        <div class="tab-page active" id="evidence">
+          <div class="section-title">
+            <h2>案卷记录</h2>
+            <span id="evidenceCount">0/11</span>
+          </div>
+          <div class="cards" id="evidenceCards"></div>
+        </div>
+
+        <div class="tab-page" id="testimony">
+          <div class="section-title">
+            <h2>四份证词</h2>
+            <span>逐份查看</span>
+          </div>
+          <div class="people" id="peopleList"></div>
+          <div class="interview" id="interviewBox">
+            <h3>选择一名嫌疑人</h3>
+            <p>证词会暴露时间线和动机的缺口。</p>
+          </div>
+        </div>
+
+        <div class="tab-page" id="deduction">
+          <div class="section-title">
+            <h2>逻辑节点</h2>
+            <span id="deductionCount">0/6</span>
+          </div>
+          <div class="deduction-list" id="deductionList"></div>
+        </div>
+
+        <div class="tab-page" id="timeline">
+          <div class="section-title">
+            <h2>案件时间轴</h2>
+            <span>自动排序</span>
+          </div>
+          <div class="timeline-board" id="timelineBoard"></div>
+        </div>
+      </aside>
+
+      <section class="scene">
+        <div class="scene-topbar">
+          <div>
+            <h2>温室平面图</h2>
+            <p id="roomHint">选择区域后，检查现场里的具体物件。</p>
+          </div>
+          <button class="ghost" id="resetBtn" type="button">重置案件</button>
+        </div>
+
+        <div class="map-wrap" aria-label="可调查的温室地图">
+          <div class="map map-hub" id="mapHub" role="list" aria-label="温室区域入口"></div>
+        </div>
+
+        <section class="inspection-view" id="inspectionView" aria-live="polite" hidden>
+          <div class="inspection-toolbar">
+            <div>
+              <p class="label">现场检查</p>
+              <h2 id="inspectorTitle">尚未进入区域</h2>
+              <p id="inspectorText">点击温室平面图上的区域进入近景。</p>
+            </div>
+            <div class="inspection-actions">
+              <button class="ghost hint-toggle" id="hintToggle" type="button" aria-pressed="false">提示模式</button>
+              <button class="ghost inspection-back" id="inspectionBack" type="button">返回平面图</button>
+            </div>
+          </div>
+          <div class="inspection-scene" id="inspectionScene" aria-label="房间近景调查画面"></div>
+          <div class="observation" id="observationBox">等待检查。</div>
+          <div class="object-zoom" id="objectZoom" role="dialog" aria-modal="true" aria-labelledby="objectZoomTitle" hidden>
+            <div class="object-panel">
+              <div class="object-panel-top">
+                <div>
+                  <p class="label">物件放大</p>
+                  <h2 id="objectZoomTitle">物件</h2>
+                </div>
+                <button class="ghost object-close" id="objectClose" type="button">关闭</button>
+              </div>
+              <div class="object-body">
+                <div class="object-visual" id="objectVisual"></div>
+                <div class="object-detail">
+                  <p id="objectObservation">选择可疑细节继续观察。</p>
+                  <div class="object-stage-list" id="objectStageList"></div>
+                  <div class="object-earned" id="objectEarned" aria-live="polite"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="logic-board">
+          <div>
+            <h2>结案推理</h2>
+            <p>从凶手、手法、伪造证据到完整行动链逐步锁定，关键推论不足时无法完美结案。</p>
+          </div>
+          <div class="case-closure" id="caseClosure"></div>
+          <div class="verdict" id="verdict" aria-live="polite"></div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="src/data/rooms.js"></script>
+  <script src="src/data/evidence.js"></script>
+  <script src="src/data/timeline.js"></script>
+  <script src="src/data/people.js"></script>
+  <script src="src/data/deductions.js"></script>
+  <script src="src/data/solution.js"></script>
+  <script src="src/state/gameState.js"></script>
+  <script src="src/ui/toast.js"></script>
+  <script src="src/ui/modal.js"></script>
+  <script src="src/ui/animations.js"></script>
+  <script src="src/modules/evidence.js"></script>
+  <script src="src/modules/dialogue.js"></script>
+  <script src="src/modules/reasoning.js"></script>
+  <script src="src/modules/timeline.js"></script>
+  <script src="src/modules/inspection.js"></script>
+  <script src="src/modules/scene.js"></script>
+  <script src="src/modules/verdict.js"></script>
+  <script src="src/main.js"></script>
+</body>
+</html>
